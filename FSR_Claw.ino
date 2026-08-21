@@ -5,7 +5,7 @@
 
 
 #define FSR_PIN 34
-static int Ro = 10;
+static int Ro = 10; // 10 kΩ
 static float Vcc = 3.3;
 
 int fsrReading = 0;
@@ -51,11 +51,19 @@ float force(float currentVal){
   //Turn analog signal (0-4095) back to voltage (0-3.3)
   Vout = currentVal / 4095 * 3.3;
 
+  if(Vout == 0) return 0;
+
   //Vout = Vcc * Ro / (Ro+Rs)
   Rs = ((Vcc * Ro) / Vout) - Ro;
 
   //F = (Rs / 271)^(-1/0.69)
   float F = pow((Rs/271),(-1.0/0.69));
+
+  Serial.print("Vout:");
+  Serial.println(Vout);
+  Serial.print("Rs: ");
+  Serial.println(Rs);
+
 
   return F;
 }
@@ -80,7 +88,7 @@ void loop() {
 
   Serial.print("Force: ");
   Serial.println(F);
-  
+  Serial.println();
 
   delay(1000);
 }
